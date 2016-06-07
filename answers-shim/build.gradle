@@ -1,4 +1,38 @@
+plugins {
+    id "com.jfrog.bintray" version "1.6"
+}
+
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+bintray {
+    user = project.hasProperty('BINTRAY_USER') ? project.BINTRAY_USER : ''
+    key = project.hasProperty('BINTRAY_API_KEY') ? project.BINTRAY_API_KEY : ''
+    publications = ['aar']
+    pkg {
+        repo = 'fabric'
+        name = "${project.pom_group_id}:${project.pom_artifact_id}"
+        userOrg = user
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/crashlytics/answers-shim-android.git'
+        version {
+            name = project.version
+            released  = new Date()
+        }
+    }
+}
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId pom_group_id
+            artifactId pom_artifact_id
+            version version
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+        }
+    }
+}
 
 android {
     compileSdkVersion 23
