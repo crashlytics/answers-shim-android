@@ -23,12 +23,18 @@ bintray {
     }
 }
 
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "source"
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
             groupId pom_group_id
             artifactId pom_artifact_id
             version version
+            artifact(sourceJar)
             artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
         }
     }
