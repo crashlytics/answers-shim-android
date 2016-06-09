@@ -1,4 +1,4 @@
-package com.crashlytics.sdk.android.answersshim;
+package com.crashlytics.android.answers.shim;
 
 import android.util.Log;
 

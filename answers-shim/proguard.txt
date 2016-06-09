@@ -1,1 +1,1 @@
--dontwarn com.crashlytics.sdk.android.answersshim.*
+-dontwarn com.crashlytics.android.answers.shim.*
