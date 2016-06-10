@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.crashlytics.sdk.android.answersshim">
+    package="com.crashlytics.android.answers.shim">
 
     <application/>
 
