@@ -10,6 +10,7 @@ bintray {
     user = project.hasProperty('BINTRAY_USER') ? project.BINTRAY_USER : ''
     key = project.hasProperty('BINTRAY_API_KEY') ? project.BINTRAY_API_KEY : ''
     publications = ['aar']
+    publish = true // Publish the release publicly, this prevents needing to log into jCenter to publish
     pkg {
         repo = 'fabric'
         name = "${project.pom_group_id}:${project.pom_artifact_id}"
@@ -19,6 +20,11 @@ bintray {
         version {
             name = project.version
             released  = new Date()
+            mavenCentralSync {
+                // Sync the release to Maven Central
+                user = project.hasProperty('SONATYPE_USER') ? project.SONATYPE_USER : ''
+                password = project.hasProperty('SONATYPE_PASSWORD') ? project.SONATYPE_PASSWORD : ''
+            }
         }
     }
 }
@@ -28,9 +34,44 @@ task sourceJar(type: Jar) {
     classifier "source"
 }
 
+def pomConfig = {
+    name 'Fabric Answers Shim'
+    url 'https://fabric.io'
+    organization {
+        name 'Fabric'
+        url 'https://fabric.io'
+    }
+    scm {
+        url "https://github.com/crashlytics/answers-shim-android"
+        connection "scm:git:http://github.com/crashlytics/answers-shim-android.git"
+        developerConnection "scm:git:git@github.com:crashlytics/answers-shim-android.git"
+    }
+    licenses {
+        license {
+            name 'Apache 2.0'
+            url 'https://opensource.org/licenses/apache2.0.php'
+            distribution 'repo'
+        }
+    }
+    developers {
+        developer {
+            id 'fabric'
+            name 'Fabric'
+            organization 'Fabric'
+            organizationUrl 'https://fabric.io'
+        }
+    }
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
+            pom.withXml {
+                // Putting the description in pomConfig doesn't work (dont know why)
+                asNode().appendNode('description', 'Allow kits to send events, which will be forwarded to the Answers Kit if it is available')
+                asNode().children().last() + pomConfig
+            }
+
             groupId pom_group_id
             artifactId pom_artifact_id
             version version
